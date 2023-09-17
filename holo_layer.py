@@ -29,6 +29,7 @@ from plugin.place_info import PlaceInfo
 from plugin.window_border import WindowBorder
 from plugin.window_number import WindowNumber
 from plugin.window_screenshot import WindowScreenshot
+from plugin.commit_info import WindowCommitInfo
 from pynput.keyboard import Listener as kbListener
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QGuiApplication, QPainter
@@ -134,6 +135,17 @@ class HoloLayer:
         self.screenshot_window_info = screenshot_window_info
         self.take_screenshot()
 
+    def show_commit_info(self, frame_info, cursor_info_args):
+        # self.emacs_frame_info = frame_info
+        # self.cursor_info_args = cursor_info_args;
+        # self.cursor_info = self.cursor_info_args.split(':')
+        self.show_commit();
+
+    @PostGui()
+    def show_commit(self):
+        self.holo_window.window_commit_info.show_commit(self.emacs_frame_info, self.cursor_info_args)
+
+        
     @PostGui()
     def take_screenshot(self):
         self.holo_window.window_screenshot.take_screenshot(self.screenshot_window_info, self.emacs_frame_info)
@@ -206,10 +218,12 @@ class HoloWindow(QWidget):
         self.menu_info = None
         self.window_info = []
         self.place_word = ""
+        self.cursor_info = []
 
         self.window_border = WindowBorder()
         self.window_number = WindowNumber()
         self.window_screenshot = WindowScreenshot()
+        self.window_commit_info = WindowCommitInfo()
         self.cursor_animation = CursorAnimation(self)
         self.place_info = PlaceInfo()
 
@@ -257,6 +271,7 @@ class HoloWindow(QWidget):
         painter.setPen(background_color)
 
         self.window_border.draw(painter, self.window_info, self.emacs_frame_info, self.menu_info)
+        self.window_commit_info.draw(painter, self.emacs_frame_info, self.cursor_info)
 
         self.place_info.draw(painter, self.window_info, self.emacs_frame_info, self.place_word)
 
@@ -276,6 +291,7 @@ class HoloWindow(QWidget):
         self.emacs_frame_info[1] -= self.window_bias_y
 
         self.menu_info = menu_info
+        self.cursor_info = cursor_info
 
         window_info = window_info.copy()
         for i in range(len(window_info)):

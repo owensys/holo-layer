@@ -217,6 +217,10 @@ you need set this value to `/usr/share/stardict/dic/stardict-oxford-gb-formated-
   "Show window border if enable this option."
   :type 'boolean)
 
+(defcustom holo-layer-enable-commit-info nil
+  "Show commit info if enable this option."
+  :type 'boolean)
+
 (defcustom holo-layer-window-number-color "#cc2444"
   "Color for window number."
   :type 'string)
@@ -789,6 +793,11 @@ Including title-bar, menu-bar, offset depends on window system, and border."
 (defun holo-layer-take-window-screenshot ()
   (interactive)
   (holo-layer-call-async "take_window_screenshot" (holo-layer-get-window-info holo-layer-emacs-frame (selected-window) (selected-window))))
+
+(defun holo-layer-show-commit-info ()
+  (interactive)
+  (holo-layer-call-async "show_commit_info" (holo-layer-get-emacs-frame-info) (holo-layer-get-cursor-info)))
+
 
 (defun holo-layer--get-emacs-id ()
   (if (eq system-type 'darwin)
